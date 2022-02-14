@@ -1,6 +1,6 @@
 
 
-# Amazon Kendra - S3 document metadata tutorial
+# Amazon Kendra - Parsing JSON content using Amazon Kendra Custom Document Enrichment tool
 
 ### What you'll learn in this tutorial:
 
