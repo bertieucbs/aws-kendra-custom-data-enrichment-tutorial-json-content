@@ -5,11 +5,12 @@
 ### What you'll learn in this tutorial:
 
 1. Use Kendra to index your exported content from a CMS or other content source 
-2. You will add metadata, additional information about a document, to documents in an Amazon S3 bucket using a metadata file. 
-3. Create an Amazon Kendra index, Data source , Index fields and sync the data
-4. Search indexed data
+2. Use Custom Document Enrichment tool that allows you to create, modify, or delete document attributes and content when you ingest your documents into Amazon Kendra
+3. Create Lambda function as a pre-extractor scripts for Document enrichment tool. 
+4. Create an Amazon Kendra index, Data source , Document enrichments , Index fields and sync the data
+5. Search indexed data to confirm that Document enrichments are present. 
 
-This tutorial takes about 30-45 minutes to complete.
+This tutorial takes about 45-60 minutes to complete.
 
 ## Concepts
 
@@ -19,77 +20,115 @@ Reference : https://docs.aws.amazon.com/kendra/latest/dg/s3-metadata.html
 
 Amazon Kendra is a highly accurate and easy to use enterprise search service that’s powered by machine learning. Kendra delivers powerful natural language search capabilities to your websites and applications so your end users can more easily find the information they need within the vast amount of content spread across your company.
 
-When the source of your data is an Amazon S3 bucket or an Amazon S3 data source, you can apply custom attributes to your documents using metadata files. You can add metadata, additional information about a document, to documents in an Amazon S3 bucket using a metadata file. Each metadata file is associated with an indexed document. 
+#### Customizing document metadata during the ingestion process
 
-Your document metadata is defined in a JSON file. The file must be a UTF-8 text file without a BOM marker. The file name of the JSON file should be document.extension.metadata.json, where "document" is the name of the document that the metadata applies to and "extension" is the file extension for the document.
+Reference : https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html 
 
-The content of the JSON file follows this template. All of the attributes are optional. If you don't specify the _source_uri, then the links returned by Amazon Kendra in search results point to the Amazon S3 bucket that contains the document. 
+You can alter your document metadata or attributes and content during the document ingestion process. Amazon Kendra Custom Document Enrichment tool allows you to create, modify, or delete document attributes and content when you ingest your documents into Amazon Kendra. This means you can manipulate and ingest your data on the fly.
 
-###### Below is an example from the developer documentations mentioned above
+This tool gives you control over how your documents should be treated and ingested into Amazon Kendra. For example, you can scrub personally identifiable information in the document metadata while ingesting your documents into Amazon Kendra.
+
+The overall process of Custom Document Enrichment is as follows:
+
+1. You configure Custom Document Enrichment when you create or update your data source, or index your documents directly into Amazon Kendra.
+2. Amazon Kendra applies inline configurations or basic logic to alter your data. For more information, see Basic data manipulation.
+3. If you choose to configure advanced data manipulation, Amazon Kendra can apply this on your original, raw documents or on the structured, parsed documents. For more information, see Advanced data manipulation.
+4. Your altered documents are ingested into Amazon Kendra.
+
+**Note** : At any point in this process, if your configuration is not valid, Amazon Kendra throws an error.
+
+In this tutorial we will be doing advanced data manipulation using Lambda functions. For more details visit [Advanced data manipulation](https://docs.aws.amazon.com/kendra/latest/dg/custom-document-enrichment.html#advanced-data-manipulation)
+
+We will be applying the Lambda function during PreExtraction Hook Configuration. The Lambda function  should expect the following request structure. We will be reading s3Bucket and s3ObjectKey in our tutorial from the temporary bucket where original data is copied for PreExtraction
 
 ```
 {
-    "DocumentId": "document ID",
-    "Attributes": {
-        "_category": "document category",
-        "_created_at": "ISO 8601 encoded string",
-        "_last_updated_at": "ISO 8601 encoded string",
-        "_source_uri": "document URI",
-        "_version": "file version",
-        "_view_count": number of times document has been viewed,
-        "custom attribute key": "custom attribute value",
-        additional custom attributes
-    },
-    "AccessControlList": [
-         {
-             "Name": "user name",
-             "Type": "GROUP | USER",
-             "Access": "ALLOW | DENY"
-         }
-    ],
-    "Title": "document title",
-    "ContentType": "HTML | MS_WORD | PDF | PLAIN_TEXT | PPT"
+    "version": <str>,
+    "dataBlobStringEncodedInBase64": <str>, //In the case of a data blob
+    "s3Bucket": <str>, //In the case of an S3 bucket
+    "s3ObjectKey": <str>, //In the case of an S3 bucket
+    "metadata": <Metadata>
 }
-
+```
+The Lambda function for PreExtraction must adhere to the following response structure
 
 ```
+{
+    "version": <str>,
+    "dataBlobStringEncodedInBase64": <str>, //In the case of a data blob
+    "s3ObjectKey": <str>, //In the case of an S3 bucket
+    "metadataUpdates": [<CustomerDocumentAttribute>]
+}
+```
 
-- You can add additional information to the Attributes field about a document that you use to filter queries or to group query responses. For more information, see Creating custom document attributes of Amazon Kendra's dev document.
-- The AccessControlList field enables you to filter the response from a query so that only certain users and groups have access to documents. For more information, see Filtering on user context of Amazon Kendra's dev document. We will not be covering AccessControlList in this tutorial
+The metadata structure, which includes the CustomerDocumentAttribute structure, is as follows
+
+```
+{
+    "attributes": [<CustomerDocumentAttribute<]
+}
+
+CustomerDocumentAttribute
+{
+    "name": <str>,
+    "value": <CustomerDocumentAttributeValue>
+}
+
+CustomerDocumentAttributeValue
+{
+    "stringValue": <str>,
+    "integerValue": <int>,
+    "longValue": <long>,
+    "stringListValue": list<str>,
+    "dateValue": <str>
+}
+```
+
+Example in our tutorial we return the following 
+
+```
+    {
+        "version" : "v0",
+        "s3ObjectKey": s3_document_key,
+        "metadataUpdates": [
+            {"name":"_document_title", "value":{"stringValue":_document_title}},
+            {"name":"_document_id", "value":{"stringValue":_document_id}},
+            {"name":"description", "value":{"stringValue":description}},
+            {"name":"_source_uri", "value":{"stringValue":_source_uri}},
+            {"name":"site_name", "value":{"stringValue":site_name}},
+            {"name":"keywords", "value":{"stringValue":keywords}},
+            {"name":"image", "value":{"stringValue":image}},
+        ]
+    }
+```
 
 ## Background
 
-You may have a situation where there is an existing CMS or content which you would like to export out in JSON and index it in Kendra. You can add metadata, additional information about a document, to documents in an Amazon S3 bucket using a metadata file. Each metadata file is associated with an indexed document. 
+You may have a situation where there is an existing CMS or content which you would like to export out in JSON and index it in Kendra. You can alter your document metadata or attributes and content during the document ingestion process. Amazon Kendra Custom Document Enrichment tool allows you to create, modify, or delete document attributes and content when you ingest your documents into Amazon Kendra. This means you can manipulate and ingest your data on the fly. 
 
-In this demo, we will export two files from sample webpages with our sample code
+This tool gives you control over how your documents should be treated and ingested into Amazon Kendra. For example, you can scrub personally identifiable information in the document metadata while ingesting your documents into Amazon Kendra.
 
-* A document with primary text/blob which you want to index. 
-* Associated metadata, additional information about that document
+In this demo, we will export JSON files from sample webpages with our sample code
 
+* JSON file with all the required fields needed for indexing 
 
 Example
 
-- quarantine-isolation.txt --> This will have main text (example *description*  which you want to index
-- quarantine-isolation.txt.metadata.json --> This will have the meta data attributes which you want to export and associate with your document. 
+- quarantine-isolation.json --> This will have have all required fields needed for indexing 
 
-Below is an example of what quarantine-isolation.txt.metadata.json would contain
+Below is an example of what quarantine-isolation.json would contain
 
 ```
 {
-    "DocumentId": "2",
-    "Attributes": {
-        "documentID": "2",
-        "title": "Quarantine & Isolation",
-        "description": "Quarantine after possible exposure to COVID-19 and stay home to monitor your health. Isolate when you have been infected with the virus and stay separated from others in your household.",
-        "url": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
-        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
-        "site_name": "Centers for Disease Control and Prevention",
-        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/your-health/328871-quarantine-and-isolation-guidance-1200x675-1.jpg?_=31337",
-        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
-        "keywords": "quarantine, isolation, isolate, COVID-19, exposure, prevent spread, stay home, separate, monitor health, Coronavirus [CoV], Prevention & Infection Control, Distancing"
-    },
-    "Title": "Quarantine & Isolation",
-    "ContentType": "PLAIN_TEXT"
+    "documentID": "5",
+    "title": "Quarantine & Isolation",
+    "description": "Quarantine after possible exposure to COVID-19 and stay home to monitor your health. Isolate when you have been infected with the virus and stay separated from others in your household.",
+    "url": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
+    "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
+    "site_name": "Centers for Disease Control and Prevention",
+    "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/your-health/328871-quarantine-and-isolation-guidance-1200x675-1.jpg?_=31337",
+    "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+    "keywords": "quarantine, isolation, isolate, COVID-19, exposure, prevent spread, stay home, separate, monitor health, Coronavirus [CoV], Prevention & Infection Control, Distancing"
 }
 
 ```
