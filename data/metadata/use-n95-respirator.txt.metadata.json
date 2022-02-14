@@ -1,0 +1,16 @@
+{
+    "DocumentId": "5",
+    "Attributes": {
+        "documentID": "5",
+        "title": "COVID-19 and Your Health",
+        "description": "How to use and wear your N95 properly so it is effective",
+        "url": "https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/use-n95-respirator.html",
+        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/use-n95-respirator.html",
+        "site_name": "Centers for Disease Control and Prevention",
+        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/your-health-sm.jpg",
+        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+        "keywords": "respirator, respirator mask, n95, mask, CDC, COVID-19, coronavirus, use respirator, free n95, free mask, replace n95, Coronavirus [CoV]"
+    },
+    "Title": "COVID-19 and Your Health",
+    "ContentType": "PLAIN_TEXT"
+}

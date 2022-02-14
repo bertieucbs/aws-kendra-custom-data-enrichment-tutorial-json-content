@@ -1,0 +1,16 @@
+{
+    "DocumentId": "3",
+    "Attributes": {
+        "documentID": "3",
+        "title": "Masks and Respirators",
+        "description": "Learn about different types of masks and respirators you can use to protect yourself and others from getting and spreading COVID-19.",
+        "url": "https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/types-of-masks.html",
+        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/prevent-getting-sick/types-of-masks.html",
+        "site_name": "Centers for Disease Control and Prevention",
+        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/prevent-getting-sick/329273-A_SM_MaskRespirators-page_800x418.jpg?_=01875",
+        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+        "keywords": "masks, CDC, COVID-19, coronavirus, Face masks, face coverings, Mask recommendations, Coronavirus [CoV], Facemasks, Respirators, Approved Masks, Cloth masks, Disposable masks"
+    },
+    "Title": "Masks and Respirators",
+    "ContentType": "PLAIN_TEXT"
+}

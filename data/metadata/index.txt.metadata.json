@@ -1,0 +1,16 @@
+{
+    "DocumentId": "2",
+    "Attributes": {
+        "documentID": "2",
+        "title": "Community, Work, and School",
+        "description": "Guidance for where you live, work, learn, pray, and play, including community mitigation frameworks.",
+        "url": "https://www.cdc.gov/coronavirus/2019-ncov/community/index.html",
+        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/community/index.html",
+        "site_name": "Centers for Disease Control and Prevention",
+        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/social-media/covid-sm-community.png",
+        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+        "keywords": "covid-19, coronavirus, community mitigation, community events, colleges, universities, tribal communities, gatherings, faith-based organizations, businesses, workplaces, child care, schools, parks, housing, homeless, retirement, correctional, detention, first responder, law enforcement, transportation, delivery, Coronavirus [CoV], Schools, Businesses & Workplace Safety"
+    },
+    "Title": "Community, Work, and School",
+    "ContentType": "PLAIN_TEXT"
+}

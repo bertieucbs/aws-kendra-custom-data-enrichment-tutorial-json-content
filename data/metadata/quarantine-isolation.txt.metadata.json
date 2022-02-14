@@ -1,0 +1,16 @@
+{
+    "DocumentId": "1",
+    "Attributes": {
+        "documentID": "1",
+        "title": "Quarantine & Isolation",
+        "description": "Quarantine after possible exposure to COVID-19 and stay home to monitor your health. Isolate when you have been infected with the virus and stay separated from others in your household.",
+        "url": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
+        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/your-health/quarantine-isolation.html",
+        "site_name": "Centers for Disease Control and Prevention",
+        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/your-health/328871-quarantine-and-isolation-guidance-1200x675-1.jpg?_=31337",
+        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+        "keywords": "quarantine, isolation, isolate, COVID-19, exposure, prevent spread, stay home, separate, monitor health, Coronavirus [CoV], Prevention & Infection Control, Distancing"
+    },
+    "Title": "Quarantine & Isolation",
+    "ContentType": "PLAIN_TEXT"
+}

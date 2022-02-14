@@ -1,0 +1,16 @@
+{
+    "DocumentId": "4",
+    "Attributes": {
+        "documentID": "4",
+        "title": "Omicron Variant: What You Need to Know",
+        "description": "Read about the Omicron variant, including what we know, tools to fight Omicron, and what CDC is doing to learn more about Omicron. 130",
+        "url": "https://www.cdc.gov/coronavirus/2019-ncov/variants/omicron-variant.html",
+        "_source_uri": "https://www.cdc.gov/coronavirus/2019-ncov/variants/omicron-variant.html",
+        "site_name": "Centers for Disease Control and Prevention",
+        "image": "https://www.cdc.gov/coronavirus/2019-ncov/images/COVID-19-SM-1200px.jpg?_=36273",
+        "icon": "/TemplatePackage/4.0/assets/imgs/favicon-32x32.png",
+        "keywords": "coronavirus, COVID-19, variant, mutation, omicron variant, Disease Information, SARS-CoV-2, Coronavirus [CoV], variant surveillance, Omicron, variant virus, cdc covid variant"
+    },
+    "Title": "Omicron Variant: What You Need to Know",
+    "ContentType": "PLAIN_TEXT"
+}
