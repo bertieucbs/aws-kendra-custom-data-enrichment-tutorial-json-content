@@ -165,7 +165,9 @@ Once all the steps are done and verified, you can search & verify your content.
 
 ### Step 1
 
-##### Prerequisites
+##### Prerequisites 
+
+**Node.js file generator**
 
 **Note** : *Any latest version of Node.js installed. At the time of writing this tutorial the version of Node is v12.16.1. Ensure its in your classpath. *
 
@@ -179,7 +181,39 @@ Once all the steps are done and verified, you can search & verify your content.
 ```
 node exportDocumentsKendraCDE.js
 ```
+**Lambda Function**
 
+Create a lambda function named "preHook" and the code *preHook.py*. Refer [Create a Lambda function with the console](https://docs.aws.amazon.com/lambda/latest/dg/getting-started-create-function.html). Note the ARN as it will be needed later
+
+**Note** : In pre extraction S3 bucket during the sync , a folder **pre-extraction/** gets populated which has original documents stored. It was also have the altered documents which Custom Data Enrichment tool creates. For this tutorial we will populated the altered document with 'description' and return additional metadata with it. 
+
+![](images/preExtractBucketDetails.png)
+
+The lambda function does the following 
+
+1. Reads the document one by one from the temporary bucket (Lambda gets the pre extraction s3 bucket in its event)
+3. For each document reads the json content in it
+4. Parse the json content for all the required fields
+5. Creates an altered document with same name as document but with extension .txt. Example if the document read was 'fileName.json' in lambda then create 'fileName.txt', add 'description' as content and store it as an object in the pre-extraction bucket which you read in lambda. Your altered document is uploaded to your Amazon S3 pre-extraction bucket
+6. Return the response contract with the key of the newly created altered document with metadata (created by parsing the json)
+
+```
+    return {
+        "version" : "v0",
+        "s3ObjectKey": s3_document_key,
+        "metadataUpdates": [
+            {"name":"_document_title", "value":{"stringValue":_document_title}},
+            {"name":"_document_id", "value":{"stringValue":_document_id}},
+            {"name":"description", "value":{"stringValue":description}},
+            {"name":"_source_uri", "value":{"stringValue":_source_uri}},
+            {"name":"site_name", "value":{"stringValue":site_name}},
+            {"name":"keywords", "value":{"stringValue":keywords}},
+            {"name":"image", "value":{"stringValue":image}},
+        ]
+    }
+```
+    
+    
 ### Step 2 : Create S3 buckets
 
 Create **two S3 buckets (Source bucket and one for pre-extractor which we will use in our configuration)** in region of your choice. For the tutorial create in us-west-2 region. 
