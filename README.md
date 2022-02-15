@@ -169,39 +169,34 @@ Once all the steps are done and verified, you can search & verify your content.
 
 **Note** : *Any latest version of Node.js installed. At the time of writing this tutorial the version of Node is v12.16.1. Ensure its in your classpath. *
 
-1. Create a folder 'KendraMetaData' on your local or [AWS Cloud9](https://aws.amazon.com/cloud9/) and download the 'exportDocumentsKendraMetadata.js' node.js file in it. Run 'npm install' to install the dependancies listed in 'package.json' file. 
-2. Within 'KendraMetaData', create two more folders 'data/documents/' and 'data/metadata/'
+1. Create a folder 'KendraCustomDocumentEnrich' on your local or [AWS Cloud9](https://aws.amazon.com/cloud9/) and download the 'exportDocumentsKendraCDE.js' node.js file in it. Run 'npm install' to install the dependancies listed in 'package.json' file. 
+2. Within 'KendraCustomDocumentEnrich', create folders 'data/raw/'
 3. The sample code will do the following 
    - Iterate through each of sample web urls and fetch basic info like 'title', 'description', 'keywords' etc.
-   - Create 'fileName.txt' and put 'description' in it for indexing. Programme will store in folder 'data/documents/'
-   - Create 'fileName.txt.metadata.json' with custom attributes/metadata about the document. Programme will store in folder 'data/metadata/'
+   - Create 'fileName.json' and put all attributes for parsing using pre-extractor. Programme will store in folder 'data/raw/'
 7. Run the sample code by typing and verify the outputs and generated files in the folders
 
 ```
-node exportDocumentsKendraMetadata.js
+node exportDocumentsKendraCDE.js
 ```
 
 ### Step 2 : Create S3 bucket
 
-Create an S3 bucket in region of your choice. For the tutorial create in us-west-2 region. 
+Create **two S3 buckets (Source bucket and one for pre-extractor which we will use in our configuration)** in region of your choice. For the tutorial create in us-west-2 region. 
 
 For basics of how to create S3 bucket refer [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
 
-Once the bucket is created, we will create two folders 
+Once the **first source bucket** is created, we will create folders 
 
-1. data/
-2. metadata/
-   - data/
+- documents/
+
+For the **second empty bucket** which will be used for pre-extractor no folders needs to be created. It will empty. 
 
 For the uploads follow the process:
 
-Upload the generated files from your local folder under *'data/documents/'* to S3 bucket's *data/*
+Upload the generated files from your local folder under *'data/raw/'* to source S3 bucket's *documents/*
 
 ![](images/s3Document.png)
-
-Upload the generated files from your local folder under *'data/metadata/'* to S3 bucket's *metadata/data/*
-
-![](images/s3DocumentMetadata.png)
 
 ### Step 3 : Create Kendra Index
 
@@ -219,7 +214,7 @@ Create a data source using S3 as data source where you have uploaded the files.
 
 [Getting started with an Amazon S3 data source (console)](https://docs.aws.amazon.com/kendra/latest/dg/getting-started-s3.html) 
 
-While creating the data source, point to the correct data and metadata folders in your S3 bucket created in Step 2 above. 
+While creating the data source, point to the correct source folder in the **source S3 bucket** created in Step 2 above. 
 
 **Note** : 
 
