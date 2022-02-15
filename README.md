@@ -275,7 +275,7 @@ With all set up, we will now On-Demand sync our data source in Step 4 above.
 
 ![](images/syncCompleted.png)
 
-#### You can look into the sync details by click on the data source and going on the details page. You will see total number of documents added. If there are errors, you can inspect the cloudwatch logs. 
+#### You can look into the sync details by click on the data source and going on the details page. You will see total number of documents Added under Sync run history table. If documents are modified or deleted you will see under Modified and Deleted column. If there are errors, you can inspect the cloudwatch logs under Failed column. 
 
 ![](images/syncDetails.png)
 
