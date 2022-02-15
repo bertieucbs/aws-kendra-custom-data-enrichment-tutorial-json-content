@@ -180,7 +180,7 @@ Once all the steps are done and verified, you can search & verify your content.
 node exportDocumentsKendraCDE.js
 ```
 
-### Step 2 : Create S3 bucket
+### Step 2 : Create S3 buckets
 
 Create **two S3 buckets (Source bucket and one for pre-extractor which we will use in our configuration)** in region of your choice. For the tutorial create in us-west-2 region. 
 
