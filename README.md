@@ -356,9 +356,9 @@ In these last steps we will clean up our environment we need to delete a few thi
    - Check the box next to our index we created in this tutorial
    - Click on Actions, then Delete
 
-2. Next we will delete our S3 bucket
+2. Next we will delete our S3 buckets
    - Click on "Services" on the top menu bar and search for S3 to get to the S3 homepage
-   - Find your S3 bucket created in this tutorial and check the box next to it
+   - Find your two S3 buckets created in this tutorial and check the box next to it
    - In the menu near the top click on "Delete"
    - You will be prompted with some information about deleting your bucket. This will delete the bucket and all of its contents. Enter your bucket name here and click "Confirm".
 
