@@ -272,9 +272,9 @@ Repeat above steps with below fields adding the data type and index usage types.
 
 **Note for Service permissions** : Amazon Kendra requires permissions to access your S3 bucket and KMS keys for decryption (if applicable). Choose an existing IAM role or let Kendra create a role for you.
 
-![](images/your-s3-preextraction-bucket.png)
+![](images/lambdaPreExtract.png)
 
-#### On the next screen Review and add the document enrichment. 
+#### On the next screen Review and add the document enrichment. Once created you can see your newly created custom document enrichment set up. 
 
 ![](images/cdeCreated.png)
 
