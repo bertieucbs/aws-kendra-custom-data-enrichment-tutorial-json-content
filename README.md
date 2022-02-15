@@ -137,7 +137,7 @@ Below is an example of what quarantine-isolation.json would contain
 
 We will be implementing below architecture for our demo. 
 
-![](images/kendra-metadata.drawio.png)
+![](images/kendra-cde.drawio.png)
 
 
 Step 1 : Export your sample web pages into following files
