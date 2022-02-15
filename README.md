@@ -258,6 +258,25 @@ Repeat above steps with below fields adding the data type and index usage types.
 
 **Note** : Amazon Kendra has 15 reserved fields, which you can map to your document attributes. For more information, please refer [Index](https://docs.aws.amazon.com/kendra/latest/dg/hiw-index.html). One of them we are using in our metadata.json file is *_source_uri* which override defaults and points to the actual sample web page rather than S3 Object path. Since *_source_uri* is a reserved field in Kendra, we don't have to add to add it definition. 
 
+### Step 6 : Document Enrichment
+
+#### Click on *Document Enrichment* --> *Add document enrichment*
+
+![](images/docEnrichMenu.png)
+
+#### On Configure basic operations pages, select the data source as shown. Skip optional Configure basic operations and click next
+
+![](images/configureBasicOption.png)
+
+#### On Configure lambda functions pages, for the *Lambda function for pre-extraction - optional* enter your lambda ARN and your s3 preextraction bucket name. Skip optional Lambda function for post-extraction - optional, enter *Service permissions* and click next
+
+**Note for Service permissions** : Amazon Kendra requires permissions to access your S3 bucket and KMS keys for decryption (if applicable). Choose an existing IAM role or let Kendra create a role for you.
+
+![](images/your-s3-preextraction-bucket.png)
+
+#### On the next screen Review and add the document enrichment. 
+
+![](images/cdeCreated.png)
 
 ### Step 6 : Sync/Index your Data source. 
 
