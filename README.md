@@ -140,24 +140,26 @@ We will be implementing below architecture for our demo.
 ![](images/kendra-cde.drawio.png)
 
 
-Step 1 : Export your sample web pages into following files
+Step 1 : Export your sample web pages into following file for example
 
-- quarantine-isolation.txt --> This will have main text (example description which you want to index)
-- quarantine-isolation.txt.metadata.json --> This will have the meta data attributes which you want to export and associate with your document.
+- quarantine-isolation.json --> This will have have all required fields needed for indexing 
 
-Step 2 : Create following folders in your sample S3 bucket and upload the files as directed below
+Step 2 : Create two S3 buckets, one for keeping the original exported files under 'documents/' folder and one empty S3 bucket for pre-extraction purpose. 
 
-- **data/** : This will have main text (example *description* which you want to index e.g. *quarantine-isolation.txt*
-- **metadata/data/** : This will have the meta data attributes which you want to export and associate with your document. e.g. *quarantine-isolation.txt.metadata.json*
+- **First S3 bucket (Source) : documents/** : This will orginal document on which pre-extraction process will happen e.g. *quarantine-isolation.json*
+- **First S3 bucket (Pre-Extraction) : Empty with no folders**: 
+
 
 Step 3 : Do the following in Amazon Kendra 
 
+* Create Lambda function for the pre-extractor
 * Create Kendra index. 
-* Create Datasource using S3 bucket as source and pointing to data and metadata folders. Reference : [Getting started with an Amazon S3 data source (console)](https://docs.aws.amazon.com/kendra/latest/dg/getting-started-s3.html) 
+* Create Datasource using source S3 bucket. Reference : [Getting started with an Amazon S3 data source (console)](https://docs.aws.amazon.com/kendra/latest/dg/getting-started-s3.html) 
 * Use the console or the [UpdateIndex API](https://docs.aws.amazon.com/kendra/latest/dg/API_UpdateIndex.html) to create the index fields. The supported field types are date, long, string, and string list. Reference : [Creating custom document attributes](https://docs.aws.amazon.com/kendra/latest/dg/custom-attributes.html)
+* Add document enrichment configurations
 * Sync the content
 
-Once all the steps are done and verified, you can search your content. 
+Once all the steps are done and verified, you can search & verify your content. 
 
 ## Getting Started
 
