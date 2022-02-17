@@ -1,14 +1,14 @@
 
 
-# Amazon Kendra - Parsing JSON content using Amazon Kendra Custom Document Enrichment tool
+# Amazon Kendra - Parsing JSON content using Amazon Kendra's Custom Document Enrichment tool
 
 ### What you'll learn in this tutorial:
 
-1. Use Kendra to index your exported content from a CMS or other content source 
+1. Use Amazon Kendra to index your exported content from a CMS or other content source 
 2. Use Custom Document Enrichment tool that allows you to create, modify, or delete document attributes and content when you ingest your documents into Amazon Kendra
-3. Create Lambda function as a pre-extractor scripts for Document enrichment tool. 
+3. Create Lambda function as a pre-extractor script for Document enrichment tool. 
 4. Create an Amazon Kendra index, Data source , Document enrichments , Index fields and sync the data
-5. Search indexed data to confirm that Document enrichments are present. 
+5. Search indexed data to confirm that Document enrichments/metadata are present. 
 
 This tutorial takes about 45-60 minutes to complete.
 
@@ -41,6 +41,8 @@ In this tutorial we will be doing advanced data manipulation using Lambda functi
 
 We will be applying the Lambda function during PreExtraction Hook Configuration. The Lambda function  should expect the following request structure. We will be reading s3Bucket and s3ObjectKey in our tutorial from the temporary bucket where original data is copied for PreExtraction
 
+**Lambda function request structure**
+
 ```
 {
     "version": <str>,
@@ -52,6 +54,8 @@ We will be applying the Lambda function during PreExtraction Hook Configuration.
 ```
 The Lambda function for PreExtraction must adhere to the following response structure
 
+**Lambda function response structure**
+
 ```
 {
     "version": <str>,
@@ -61,7 +65,7 @@ The Lambda function for PreExtraction must adhere to the following response stru
 }
 ```
 
-The metadata structure, which includes the CustomerDocumentAttribute structure, is as follows
+The metadata structure, which includes the 'CustomerDocumentAttribute' structure, is as follows
 
 ```
 {
@@ -84,7 +88,9 @@ CustomerDocumentAttributeValue
 }
 ```
 
-Example in our tutorial we return the following 
+Example in our tutorial we return the following
+
+Here you can see "metadataUpdates" has all fields which are parsed from json e.g. _document_title, description, keywords etc. 
 
 ```
     {
@@ -106,15 +112,15 @@ Example in our tutorial we return the following
 
 You may have a situation where there is an existing CMS or content which you would like to export out in JSON and index it in Kendra. You can alter your document metadata or attributes and content during the document ingestion process. Amazon Kendra Custom Document Enrichment tool allows you to create, modify, or delete document attributes and content when you ingest your documents into Amazon Kendra. This means you can manipulate and ingest your data on the fly. 
 
-This tool gives you control over how your documents should be treated and ingested into Amazon Kendra. For example, you can scrub personally identifiable information in the document metadata while ingesting your documents into Amazon Kendra.
+This tool gives you control over how your documents should be treated and ingested into Amazon Kendra. For example, you can scrub personally identifiable information in the document metadata while ingesting your documents into Amazon Kendra or add/override fields.
 
-In this demo, we will export JSON files from sample webpages with our sample code
+In this tutorial, we will export one json file from sample webpages (one json per webpage) with the help of our helper node.js code. You may have your own export process and this is just for example purpose.
 
 * JSON file with all the required fields needed for indexing 
 
 Example
 
-- quarantine-isolation.json --> This will have have all required fields needed for indexing 
+- quarantine-isolation.json --> This will have have all required fields needed for indexing and override Amazon Kendra's reserved fields example document title, source uri etc. 
 
 Below is an example of what quarantine-isolation.json would contain
 
@@ -140,7 +146,7 @@ We will be implementing below architecture for our demo.
 ![](images/kendra-cde.drawio.png)
 
 
-Step 1 : Export your sample web pages into following file for example
+Step 1 : Export your sample web pages into following json file for example. For real world you will decided which fields to be exported for indexing based on requirements. 
 
 - quarantine-isolation.json --> This will have have all required fields needed for indexing 
 
@@ -167,25 +173,25 @@ Once all the steps are done and verified, you can search & verify your content.
 
 ##### Prerequisites 
 
-**Node.js file generator**
+**Sample File export generator**
 
-**Note** : *Any latest version of Node.js installed. At the time of writing this tutorial the version of Node is v12.16.1. Ensure its in your classpath. *
+**Note** : Any latest version of Node.js installed. At the time of writing this tutorial the version of Node used is v12.16.1. Ensure its in your classpath.
 
 1. Create a folder 'KendraCustomDocumentEnrich' on your local or [AWS Cloud9](https://aws.amazon.com/cloud9/) and download the 'exportDocumentsKendraCDE.js' node.js file in it. Run 'npm install' to install the dependancies listed in 'package.json' file. 
 2. Within 'KendraCustomDocumentEnrich', create folders 'data/raw/'
 3. The sample code will do the following 
    - Iterate through each of sample web urls and fetch basic info like 'title', 'description', 'keywords' etc.
-   - Create 'fileName.json' and put all attributes for parsing using pre-extractor. Programme will store in folder 'data/raw/'
-7. Run the sample code by typing and verify the outputs and generated files in the folders
+   - Create 'fileName.json' and put all attributes for parsing using pre-extractor. Programme will store in folder 'data/raw/'. It will create one json file per web page
+7. Run the sample code by typing below command and verify the outputs and generated files in the folders
 
 ```
 node exportDocumentsKendraCDE.js
 ```
 **Lambda Function**
 
-Create a lambda function named "preHook" and the code *preHook.py*. Refer [Create a Lambda function with the console](https://docs.aws.amazon.com/lambda/latest/dg/getting-started-create-function.html). Note the ARN as it will be needed later
+Create a lambda function named **preHook** and the code **preHook.py**. Refer [Create a Lambda function with the console](https://docs.aws.amazon.com/lambda/latest/dg/getting-started-create-function.html). Note the ARN as it will be needed later
 
-**Note** : In pre extraction S3 bucket during the sync , a folder **pre-extraction/** gets populated which has original documents stored. It was also have the altered documents which Custom Data Enrichment tool creates. For this tutorial we will populated the altered document with 'description' and return additional metadata with it. 
+**Note** : In pre extraction S3 bucket during the sync , a folder **pre-extraction/** gets populated which has original documents stored. It was also have the altered documents which Custom Data Enrichment tool creates. For this tutorial we will populate the altered document with 'description' and return additional metadata with it. 
 
 ![](images/preExtractBucketDetails.png)
 
@@ -216,11 +222,11 @@ The lambda function does the following
     
 ### Step 2 : Create S3 buckets
 
-Create **two S3 buckets (Source bucket and one for pre-extractor which we will use in our configuration)** in region of your choice. For the tutorial create in us-west-2 region. 
+Create **two S3 buckets (Source bucket and other for pre-extractor which we will use in our configuration)** in region of your choice. For the tutorial create in us-west-2 region. 
 
 For basics of how to create S3 bucket refer [Creating a bucket](https://docs.aws.amazon.com/AmazonS3/latest/userguide/create-bucket-overview.html)
 
-Once the **first source bucket** is created, we will create folders 
+Once the **first source bucket** is created, we will create below folder
 
 - documents/
 
@@ -228,7 +234,7 @@ For the **second empty bucket** which will be used for pre-extractor no folders 
 
 For the uploads follow the process:
 
-Upload the generated files from your local folder under *'data/raw/'* to source S3 bucket's *documents/*
+Upload the generated files from your local folder under *'data/raw/'* to source S3 bucket's **documents/**
 
 ![](images/s3Document.png)
 
@@ -294,11 +300,11 @@ Repeat above steps with below fields adding the data type and index usage types.
 
 ### Step 6 : Document Enrichment
 
-#### Click on *Document Enrichment* --> *Add document enrichment*
+#### Click on *Document Enrichment* and then *Add document enrichment*
 
 ![](images/docEnrichMenu.png)
 
-#### On Configure basic operations pages, select the data source as shown. Skip optional Configure basic operations and click next
+#### On Configure basic operations pages, select the data source as shown. Skip optional 'Configure basic operations' and click Next
 
 ![](images/configureBasicOption.png)
 
@@ -342,6 +348,8 @@ With our content indexed, lets search indexed content
 
 #### Search the content
 
+As you can see below our content is indexed successfully and metadata are being reflected under Document fields section. The index definitions are also being reflected correctly e.g. title and sitename as Facets. These are the ones which was processed and returned by our lambda function. 
+
 ![](images/searchIndex2.png)
 
 ## Conclusion and Clean Up
@@ -356,7 +364,7 @@ In these last steps we will clean up our environment we need to delete a few thi
    - Check the box next to our index we created in this tutorial
    - Click on Actions, then Delete
 
-2. Next we will delete our S3 buckets
+2. Next we will delete our two S3 buckets
    - Click on "Services" on the top menu bar and search for S3 to get to the S3 homepage
    - Find your two S3 buckets created in this tutorial and check the box next to it
    - In the menu near the top click on "Delete"
